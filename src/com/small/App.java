@@ -9,14 +9,14 @@ import java.util.Random;
 
 public class App extends JFrame implements ActionListener {
     private static final int DELAY = 100;
-    private static final int gridWidth = 100;
-    private static final int gridHeight = 100;
+    private static final int gridColumns = 100;
+    private static final int gridRows = 100;
     private static final int cellWidth = 9;
     private static final int cellHeight = 9;
 
     private final Timer timer = new Timer(DELAY, this);
     private final GridPanel gridPanel =
-            new GridPanel(gridWidth, gridHeight, cellWidth, cellHeight);
+            new GridPanel(gridRows, gridColumns, cellHeight, cellWidth);
 
     private JButton buttonStop;
     private JButton buttonGo;
@@ -39,17 +39,13 @@ public class App extends JFrame implements ActionListener {
 
     private void randomGridInit() {
         Random rng = new Random();
-        boolean[] grid = gridPanel.getGrid();
-        for (int column = 1; column < App.gridWidth - 1; ++column) {
-            for (int row = 1; row < App.gridHeight - 1; ++row) {
-                grid[column * gridWidth + row] = rng.nextInt() % 7 == 0;
+        boolean[][] grid = gridPanel.getGrid();
+        for (int row = 1; row < App.gridRows - 1; ++row) {
+            for (int column = 1; column < App.gridColumns - 1; ++column) {
+                grid[row][column] = rng.nextInt() % 7 == 0;
             }
         }
         gridPanel.setGrid(grid);
-    }
-
-    private int xyToGrid(int x, int y) {
-        return y * gridWidth + x;
     }
 
     @Override
@@ -69,27 +65,27 @@ public class App extends JFrame implements ActionListener {
         }
     }
 
-    private boolean nextVal(int x, int y) {
-        boolean[] grid = gridPanel.getGrid();
-        boolean currentState = grid[xyToGrid(x, y)];
+    private boolean nextVal(int row, int column) {
+        boolean[][] grid = gridPanel.getGrid();
+        boolean currentState = grid[row][column];
         int liveNeighbors = 0;
-        liveNeighbors += grid[xyToGrid(x - 1, y)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x + 1, y)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x, y - 1)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x, y + 1)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x - 1, y - 1)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x - 1, y + 1)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x + 1, y - 1)] ? 1 : 0;
-        liveNeighbors += grid[xyToGrid(x + 1, y + 1)] ? 1 : 0;
+        liveNeighbors += grid[ row    ][column - 1] ? 1 : 0;
+        liveNeighbors += grid[ row    ][column + 1] ? 1 : 0;
+        liveNeighbors += grid[ row - 1][column    ] ? 1 : 0;
+        liveNeighbors += grid[ row + 1][column    ] ? 1 : 0;
+        liveNeighbors += grid[ row - 1][column - 1] ? 1 : 0;
+        liveNeighbors += grid[ row + 1][column - 1] ? 1 : 0;
+        liveNeighbors += grid[ row - 1][column + 1] ? 1 : 0;
+        liveNeighbors += grid[ row + 1][column + 1] ? 1 : 0;
 
         return (currentState && liveNeighbors == 2) || liveNeighbors == 3;
     }
 
     private void doCycle() {
-        boolean[] grid2 = new boolean[gridWidth * gridHeight];
-        for (int x = 1; x < App.gridWidth - 1; ++x) {
-            for (int y = 1; y < App.gridHeight - 1; ++y) {
-                grid2[xyToGrid(x, y)] = nextVal(x, y);
+        boolean[][] grid2 = new boolean[gridRows][gridColumns];
+        for (int row = 1; row < App.gridRows - 1; ++row) {
+            for (int column = 1; column < App.gridColumns - 1; ++column) {
+                grid2[row][column] = nextVal(row, column);
             }
         }
         gridPanel.setGrid(grid2);
@@ -98,8 +94,8 @@ public class App extends JFrame implements ActionListener {
     private void initGUI() {
         setTitle("Conway's Game of Life");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(gridWidth * cellWidth + 30,
-                gridHeight * cellHeight + 110);
+        setSize(gridColumns * cellWidth + 30,
+                gridRows * cellHeight + 110);
 
         JPanel panel = new JPanel();
         add(panel);

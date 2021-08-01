@@ -4,33 +4,33 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GridPanel extends JPanel {
-    private boolean[] grid;
-    private final int gridWidth;
-    private final int gridHeight;
-    private final int cellWidth;
+    private boolean[][] grid;
+    private final int gridRows;
+    private final int gridColumns;
     private final int cellHeight;
+    private final int cellWidth;
 
-    public GridPanel(int gridWidth, int gridHeight, int cellWidth, int cellHeight) {
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.cellWidth = cellWidth;
+    public GridPanel(int gridRows, int gridColumns, int cellHeight, int cellWidth) {
+        this.gridRows = gridRows;
+        this.gridColumns = gridColumns;
         this.cellHeight = cellHeight;
+        this.cellWidth = cellWidth;
 
-        Dimension size = new Dimension(this.gridWidth * this.cellWidth, this.gridWidth * this.cellWidth);
+        Dimension size = new Dimension(this.gridColumns * this.cellWidth, this.gridRows * this.cellHeight);
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
 
-        grid = new boolean[this.gridWidth * this.gridHeight];
+        grid = new boolean [this.gridRows][this.gridColumns] ;
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        for (int column = 1; column < gridWidth-1; ++column) {
-            for (int row = 1; row < gridHeight-1; ++row) {
-                int x = column * cellWidth;
+        for (int row = 1; row < gridRows -1; ++row) {
+            for (int column = 1; column < gridColumns -1; ++column) {
                 int y = row * cellHeight;
-                drawIt(g, x, y, getGrid()[column * gridWidth + row]);
+                int x = column * cellWidth;
+                drawIt(g, x, y, getGrid()[row][column]);
             }
         }
     }
@@ -38,15 +38,16 @@ public class GridPanel extends JPanel {
     private void drawIt(Graphics g, int x, int y, boolean isOn) {
         g.setColor(isOn ? Color.RED : Color.BLACK);
         g.fillRect(x, y, cellWidth, cellHeight);
+
         g.setColor(Color.WHITE);
         g.drawRect(x, y, cellWidth, cellHeight);
     }
 
-    public boolean[] getGrid() {
+    public boolean[][] getGrid() {
         return grid;
     }
 
-    public void setGrid(boolean[] grid) {
+    public void setGrid(boolean[][] grid) {
         this.grid = grid;
         this.repaint();
     }

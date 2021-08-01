@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Random;
 
 public class GridPanel extends JPanel implements MouseListener {
     private final boolean[][] grid;
@@ -27,13 +28,47 @@ public class GridPanel extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
+    public void randomGridInit() {
+        Random rng = new Random();
+        for (int row = 1; row < gridRows - 1; ++row) {
+            for (int column = 1; column < gridColumns - 1; ++column) {
+                grid[row][column] = rng.nextInt() % 7 == 0;
+            }
+        }
+    }
+
+    private boolean nextVal(int row, int column) {
+        boolean currentState = grid[row][column];
+        int liveNeighbors = 0;
+
+        for (int neighborRow = row - 1; neighborRow <= row + 1; ++neighborRow) {
+            for (int neighborColumn = column - 1; neighborColumn <= column + 1; ++neighborColumn) {
+                if (neighborRow == row && neighborColumn == column) {
+                    continue;
+                }
+                liveNeighbors += grid[neighborRow][neighborColumn] ? 1 : 0;
+            }
+        }
+        return (currentState && liveNeighbors == 2) || liveNeighbors == 3;
+    }
+
+    public void doCycle() {
+        boolean[][] nextGrid = new boolean[gridRows][gridColumns];
+        for (int row = 1; row < gridRows - 1; ++row) {
+            for (int column = 1; column < gridColumns - 1; ++column) {
+                nextGrid[row][column] = nextVal(row, column);
+            }
+        }
+        setGrid(nextGrid);
+    }
+
     @Override
     public void paintComponent(Graphics g) {
-        for (int row = 1; row < gridRows -1; ++row) {
-            for (int column = 1; column < gridColumns -1; ++column) {
+        for (int row = 1; row < gridRows - 1; ++row) {
+            for (int column = 1; column < gridColumns - 1; ++column) {
                 int y = row * cellHeight;
                 int x = column * cellWidth;
-                drawIt(g, x, y, getGrid()[row][column]);
+                drawIt(g, x, y, grid[row][column]);
             }
         }
     }
@@ -44,10 +79,6 @@ public class GridPanel extends JPanel implements MouseListener {
 
         g.setColor(Color.WHITE);
         g.drawRect(x, y, cellWidth, cellHeight);
-    }
-
-    public boolean[][] getGrid() {
-        return grid;
     }
 
     public void setGrid(boolean[][] grid) {

@@ -52,16 +52,23 @@ public class App extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {
         if (actionEvent.getActionCommand() == null) {
             doCycle();
-        } else if (actionEvent.getActionCommand().equals("Randomize")) {
-            randomGridInit();
-        } else if (actionEvent.getActionCommand().equals("Stop")) {
-            stop();
-        } else if (actionEvent.getActionCommand().equals("Go")) {
-            go();
-        } else if (actionEvent.getActionCommand().equals("Quit")) {
-            this.processWindowEvent(
-                    new WindowEvent(
-                            this, WindowEvent.WINDOW_CLOSING));
+        } else {
+            switch (actionEvent.getActionCommand()) {
+                case "Randomize":
+                    randomGridInit();
+                    break;
+                case "Stop":
+                    stop();
+                    break;
+                case "Go":
+                    go();
+                    break;
+                case "Quit":
+                    this.processWindowEvent(
+                            new WindowEvent(
+                                    this, WindowEvent.WINDOW_CLOSING));
+                    break;
+            }
         }
     }
 
@@ -69,15 +76,15 @@ public class App extends JFrame implements ActionListener {
         boolean[][] grid = gridPanel.getGrid();
         boolean currentState = grid[row][column];
         int liveNeighbors = 0;
-        liveNeighbors += grid[ row    ][column - 1] ? 1 : 0;
-        liveNeighbors += grid[ row    ][column + 1] ? 1 : 0;
-        liveNeighbors += grid[ row - 1][column    ] ? 1 : 0;
-        liveNeighbors += grid[ row + 1][column    ] ? 1 : 0;
-        liveNeighbors += grid[ row - 1][column - 1] ? 1 : 0;
-        liveNeighbors += grid[ row + 1][column - 1] ? 1 : 0;
-        liveNeighbors += grid[ row - 1][column + 1] ? 1 : 0;
-        liveNeighbors += grid[ row + 1][column + 1] ? 1 : 0;
 
+        for (int neighborRow = row - 1; neighborRow <= row + 1; ++neighborRow) {
+            for (int neighborColumn = column - 1; neighborColumn <= column + 1; ++neighborColumn) {
+                if (neighborRow == row && neighborColumn == column) {
+                    continue;
+                }
+                liveNeighbors += grid[neighborRow][neighborColumn] ? 1 : 0;
+            }
+        }
         return (currentState && liveNeighbors == 2) || liveNeighbors == 3;
     }
 

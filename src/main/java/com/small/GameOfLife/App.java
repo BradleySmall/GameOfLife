@@ -2,16 +2,13 @@ package com.small.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-public class App extends JFrame implements ActionListener {
+public class App extends JFrame {
     private static final AppProperties appProperties = new AppProperties();
-
-    private final Timer timer = new Timer(appProperties.DELAY, this);
     private final GridPanel gridPanel = new GridPanel(appProperties.GRID_ROWS, appProperties.GRID_COLUMNS,
             appProperties.CELL_HEIGHT, appProperties.CELL_WIDTH);
+    private final Timer timer = new Timer(appProperties.DELAY, e -> this.gridPanel.doCycle());
     private final JButton buttonStop = new JButton("Stop");
     private final JButton buttonGo = new JButton("Go");
 
@@ -36,29 +33,6 @@ public class App extends JFrame implements ActionListener {
         buttonStop.setEnabled(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getActionCommand() == null) {
-            gridPanel.doCycle();
-        } else {
-            switch (actionEvent.getActionCommand()) {
-                case "Randomize":
-                    gridPanel.randomGridInit();
-                    break;
-                case "Stop":
-                    stop();
-                    break;
-                case "Go":
-                    go();
-                    break;
-                case "Quit":
-                    this.processWindowEvent(
-                            new WindowEvent(
-                                    this, WindowEvent.WINDOW_CLOSING));
-                    break;
-            }
-        }
-    }
 
     private void initGUI() {
         setTitle("Conway's Game of Life");
@@ -73,17 +47,19 @@ public class App extends JFrame implements ActionListener {
         buttonPanel.setBackground(Color.GRAY);
 
         JButton buttonRandomize = new JButton("Randomize");
-        buttonRandomize.addActionListener(this);
+        buttonRandomize.addActionListener(e -> gridPanel.randomGridInit());
         buttonPanel.add(buttonRandomize);
 
-        buttonStop.addActionListener(this);
+        buttonStop.addActionListener(e -> stop());
         buttonPanel.add(buttonStop);
 
-        buttonGo.addActionListener(this);
+        buttonGo.addActionListener(e -> go());
         buttonPanel.add(buttonGo);
 
         JButton buttonQuit = new JButton("Quit");
-        buttonQuit.addActionListener(this);
+        buttonQuit.addActionListener(e -> this.processWindowEvent(
+                new WindowEvent(
+                        this, WindowEvent.WINDOW_CLOSING)));
         buttonPanel.add(buttonQuit);
 
         panel.add(buttonPanel);

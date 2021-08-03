@@ -35,6 +35,7 @@ public class GridPanel extends JPanel implements MouseListener {
                 grid[row][column] = rng.nextInt() % 7 == 0;
             }
         }
+        repaint();
     }
 
     private boolean nextVal(int row, int column) {

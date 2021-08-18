@@ -1,4 +1,4 @@
-package com.small.GameOfLife;
+package com.small.gameoflife;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,9 +9,11 @@ import java.awt.event.WindowEvent;
 public class App extends JFrame implements ActionListener {
     private static final AppProperties appProperties = new AppProperties();
 
-    private final Timer timer = new Timer(appProperties.DELAY, this);
-    private final GridPanel gridPanel = new GridPanel(appProperties.GRID_ROWS, appProperties.GRID_COLUMNS,
-            appProperties.CELL_HEIGHT, appProperties.CELL_WIDTH);
+    private final Timer timer = new Timer(appProperties.getPropertyInt("DELAY", 100), this);
+    private final GridPanel gridPanel = new GridPanel(appProperties.getPropertyInt("GRID_ROWS", 10),
+                                                      appProperties.getPropertyInt("GRID_COLUMNS", 10),
+                                                      appProperties.getPropertyInt("CELL_HEIGHT", 30),
+                                                      appProperties.getPropertyInt("CELL_WIDTH", 30));
     private final JButton buttonStop = new JButton("Stop");
     private final JButton buttonGo = new JButton("Go");
 
@@ -56,13 +58,15 @@ public class App extends JFrame implements ActionListener {
                             new WindowEvent(
                                     this, WindowEvent.WINDOW_CLOSING));
                     break;
+                default:
+                    break;
             }
         }
     }
 
     private void initGUI() {
         setTitle("Conway's Game of Life");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
         add(panel);

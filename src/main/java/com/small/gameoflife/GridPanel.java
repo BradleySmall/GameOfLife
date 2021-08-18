@@ -1,4 +1,4 @@
-package com.small.GameOfLife;
+package com.small.gameoflife;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +12,7 @@ public class GridPanel extends JPanel implements MouseListener {
     private final int gridColumns;
     private final int cellHeight;
     private final int cellWidth;
+    private final Random rng = new Random();
 
     public GridPanel(int gridRows, int gridColumns, int cellHeight, int cellWidth) {
         this.gridRows = gridRows;
@@ -29,7 +30,6 @@ public class GridPanel extends JPanel implements MouseListener {
     }
 
     public void randomGridInit() {
-        Random rng = new Random();
         for (int row = 1; row < gridRows - 1; ++row) {
             for (int column = 1; column < gridColumns - 1; ++column) {
                 grid[row][column] = rng.nextInt() % 7 == 0;
@@ -84,16 +84,13 @@ public class GridPanel extends JPanel implements MouseListener {
 
     public void setGrid(boolean[][] grid) {
         for (int row = 0; row < gridRows; ++row) {
-            for (int column = 0; column < gridColumns; ++column) {
-                this.grid[row][column] = grid[row][column];
-            }
+            if (gridColumns >= 0) System.arraycopy(grid[row], 0, this.grid[row], 0, gridColumns);
         }
         this.repaint();
     }
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        //JOptionPane.showMessageDialog(null, "This is a mouseClicked event at " + gridPoint.toString());
         Point point = mouseEvent.getPoint();
         int row = point.y / cellHeight;
         int column = point.x / cellWidth;
@@ -103,25 +100,21 @@ public class GridPanel extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-        //JOptionPane.showMessageDialog(null, "This is a mousePressed event");
-
+        // Ignoring this event
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
-        //JOptionPane.showMessageDialog(null, "This is a mouseReleased event");
-
+        // Ignoring this event
     }
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
-        //JOptionPane.showMessageDialog(null, "This is a mouseEntered event");
-
+        // Ignoring this event
     }
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-        //JOptionPane.showMessageDialog(null, "This is a mouseExited event");
-
+        // Ignoring this event
     }
 }

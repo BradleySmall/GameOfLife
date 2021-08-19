@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2021. Bradley M. Small
+ * All Rights reserved.
+ */
+
 package com.small.gameoflife;
 
 import javax.swing.*;

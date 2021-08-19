@@ -2,12 +2,13 @@ package com.small.gameoflife;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-public class App extends JFrame implements ActionListener {
+public class App extends JFrame {
     private static final AppProperties appProperties = new AppProperties();
+    private final GridPanel gridPanel = new GridPanel(appProperties.GRID_ROWS, appProperties.GRID_COLUMNS,
+            appProperties.CELL_HEIGHT, appProperties.CELL_WIDTH);
+    private final Timer timer = new Timer(appProperties.DELAY, e -> this.gridPanel.doCycle());
 
     private final Timer timer = new Timer(appProperties.getPropertyInt("DELAY", 100), this);
     private final GridPanel gridPanel = new GridPanel(appProperties.getPropertyInt("GRID_ROWS", 10),
@@ -77,17 +78,19 @@ public class App extends JFrame implements ActionListener {
         buttonPanel.setBackground(Color.GRAY);
 
         JButton buttonRandomize = new JButton("Randomize");
-        buttonRandomize.addActionListener(this);
+        buttonRandomize.addActionListener(e -> gridPanel.randomGridInit());
         buttonPanel.add(buttonRandomize);
 
-        buttonStop.addActionListener(this);
+        buttonStop.addActionListener(e -> stop());
         buttonPanel.add(buttonStop);
 
-        buttonGo.addActionListener(this);
+        buttonGo.addActionListener(e -> go());
         buttonPanel.add(buttonGo);
 
         JButton buttonQuit = new JButton("Quit");
-        buttonQuit.addActionListener(this);
+        buttonQuit.addActionListener(e -> this.processWindowEvent(
+                new WindowEvent(
+                        this, WindowEvent.WINDOW_CLOSING)));
         buttonPanel.add(buttonQuit);
 
         panel.add(buttonPanel);

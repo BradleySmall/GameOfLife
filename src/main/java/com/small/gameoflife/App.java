@@ -6,15 +6,14 @@ import java.awt.event.WindowEvent;
 
 public class App extends JFrame {
     private static final AppProperties appProperties = new AppProperties();
-    private final GridPanel gridPanel = new GridPanel(appProperties.GRID_ROWS, appProperties.GRID_COLUMNS,
-            appProperties.CELL_HEIGHT, appProperties.CELL_WIDTH);
-    private final Timer timer = new Timer(appProperties.DELAY, e -> this.gridPanel.doCycle());
+    private final GridPanel gridPanel = new GridPanel(
+            appProperties.getPropertyInt("GRID_ROWS",10),
+            appProperties.getPropertyInt("GRID_COLUMNS",10),
+            appProperties.getPropertyInt("CELL_HEIGHT", 30),
+            appProperties.getPropertyInt("CELL_WIDTH", 30));
+    private final Timer timer = new Timer(appProperties.getPropertyInt("DELAY", 100),
+            e -> this.gridPanel.doCycle());
 
-    private final Timer timer = new Timer(appProperties.getPropertyInt("DELAY", 100), this);
-    private final GridPanel gridPanel = new GridPanel(appProperties.getPropertyInt("GRID_ROWS", 10),
-                                                      appProperties.getPropertyInt("GRID_COLUMNS", 10),
-                                                      appProperties.getPropertyInt("CELL_HEIGHT", 30),
-                                                      appProperties.getPropertyInt("CELL_WIDTH", 30));
     private final JButton buttonStop = new JButton("Stop");
     private final JButton buttonGo = new JButton("Go");
 
@@ -37,32 +36,6 @@ public class App extends JFrame {
         timer.start();
         buttonGo.setEnabled(false);
         buttonStop.setEnabled(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getActionCommand() == null) {
-            gridPanel.doCycle();
-        } else {
-            switch (actionEvent.getActionCommand()) {
-                case "Randomize":
-                    gridPanel.randomGridInit();
-                    break;
-                case "Stop":
-                    stop();
-                    break;
-                case "Go":
-                    go();
-                    break;
-                case "Quit":
-                    this.processWindowEvent(
-                            new WindowEvent(
-                                    this, WindowEvent.WINDOW_CLOSING));
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     private void initGUI() {

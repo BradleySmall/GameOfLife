@@ -18,3 +18,5 @@ claim it as your own. Give a guy a little credit if you use his work.
 
 If you wish to make money with this code, such as publishing it in a tutorial or making a salable product I want a cut
 of the action. As unlikely as this may be, simply contact me, so we can work out the details. 
+
+-30-
